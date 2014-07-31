@@ -1,0 +1,28 @@
+{
+  "name": "lookup-grid",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "ndarray": "~1.0.15"
+  },
+  "devDependencies": {
+    "tape": "^2.13.4"
+  },
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmckegg/lookup-grid.git"
+  },
+  "author": "Matt McKegg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmckegg/lookup-grid/issues"
+  },
+  "homepage": "https://github.com/mmckegg/lookup-grid"
+}
