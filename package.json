@@ -1,13 +1,13 @@
 {
   "name": "lookup-grid",
   "version": "1.0.0",
-  "description": "",
+  "description": "Position named two-dimensional ndarrays on an x/y grid for lookup of individual coords and values.",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "ndarray": "~1.0.15"
+    "array-grid": "^1.0.0"
   },
   "devDependencies": {
     "tape": "^2.13.4"

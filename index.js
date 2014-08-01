@@ -1,4 +1,4 @@
-var ndarray = require('ndarray')
+var ArrayGrid = require('array-grid')
 
 module.exports = LookupGrid
 
@@ -12,10 +12,13 @@ function LookupGrid(width, height){
   this.shape = [width, height]
   this._arrayLookup = {}
   this._coordsLookup = {}
-  this._grid = ndarray(this.data, this.shape)
+  this._grid = ArrayGrid(this.data, this.shape)
+
 }
 
 LookupGrid.prototype = {
+
+  constructor: LookupGrid,
   
   set: function(key, array, origin){
     this.remove(key)
@@ -25,6 +28,7 @@ LookupGrid.prototype = {
         var coords = [x+(origin[0]||0),y+(origin[1]||0)]
         var value = array.get(x,y)
         this._grid.set(coords[0], coords[1], value)
+        console.log('set', coords[0], coords[1], value)
         this._coordsLookup[value] = coords
       }
     }
@@ -50,6 +54,10 @@ LookupGrid.prototype = {
       }
       this._arrayLookup[key] = null
     }
+  },
+
+  index: function(x,y){
+    return (this.stride[0] * x) + (this.stride[1] * y)
   },
 
   get: function(x, y){
