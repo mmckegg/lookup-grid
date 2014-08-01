@@ -30,6 +30,15 @@ require('tape')(function(t){
   t.deepEqual(grid.lookup('w'), [1,6])
   t.deepEqual(grid.lookup('^'), [3,1])
 
+  grid.move('synth', [3,2])
+  t.equal(grid.get(5,3), '!')
+
+  grid.remove('bass')
+  t.equal(grid.get(1,5), null)
+  t.equal(grid.get(3,5), null)
+  t.equal(grid.get(1,6), null)
+  t.equal(grid.get(4,6), null)
+
 
   t.end()
 })
