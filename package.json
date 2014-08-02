@@ -6,11 +6,10 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "array-grid": "^1.0.0"
-  },
   "devDependencies": {
-    "tape": "^2.13.4"
+    "tape": "^2.13.4",
+    "array-grid": "^1.0.0",
+    "ndarray": "^1.0.15"
   },
   "scripts": {
     "test": "tape test/*.js"
