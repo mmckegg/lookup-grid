@@ -1,7 +1,7 @@
 lookup-grid
 ===
 
-Position named [two-dimensional](https://github.com/mmckegg/array-grid) [ndarrays](https://github.com/mikolalysenko/ndarray) on an x/y grid for lookup of individual coords and values.
+Position [two-dimensional](https://github.com/mmckegg/array-grid) [ndarrays](https://github.com/mikolalysenko/ndarray) on an x/y grid for lookup of individual coords and values.
 
 ## Install via [npm](http://npmjs.com/packages/lookup-grid)
 
