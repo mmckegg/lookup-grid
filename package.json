@@ -1,6 +1,6 @@
 {
   "name": "lookup-grid",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Position two-dimensional ndarrays on an x/y grid for lookup of individual coords and values.",
   "main": "index.js",
   "directories": {
