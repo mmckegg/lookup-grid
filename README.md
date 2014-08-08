@@ -1,7 +1,7 @@
 lookup-grid
 ===
 
-Position [two-dimensional](https://github.com/mmckegg/array-grid) [ndarrays](https://github.com/mikolalysenko/ndarray) on an x/y grid for lookup of individual coords and values.
+Position [two-dimensional](https://github.com/mmckegg/array-grid) [ndarrays](https://github.com/mikolalysenko/ndarray) on an row/col grid for lookup of individual coords and values.
 
 ## Install via [npm](http://npmjs.com/packages/lookup-grid)
 
@@ -16,13 +16,13 @@ var LookupGrid = require('lookup-grid')
 var grid = LookupGrid(8,8)
 ```
 
-### LookupGrid(width, height)
+### LookupGrid(rows, cols)
 
-Create an instance with the specified shape as per `width` and `height`.
+Create an instance with the specified shape as per `rows` and `cols`.
 
-### grid.set(x, y, array)
+### grid.set(row, col, array)
 
-Place a 2 dimensional array ([ndarray](https://github.com/mikolalysenko/ndarray) or [array-grid](https://github.com/mmckegg/array-grid)) at origin `[x, y]`.
+Place a 2 dimensional array ([ndarray](https://github.com/mikolalysenko/ndarray) or [array-grid](https://github.com/mmckegg/array-grid)) at origin `[row, col]`.
 
 If the same array (by ref) is placed multiple times, this moves the array instead of placing additional copies.
 
@@ -30,13 +30,13 @@ If the same array (by ref) is placed multiple times, this moves the array instea
 
 Remove an array by ref from the grid.
 
-### grid.get(x,y)
+### grid.get(row,col)
 
-Resolve the inner array and return the top most value at point `[x, y]`.
+Resolve the inner array and return the top most value at point `[row, col]`.
 
 ### grid.lookup(value)
 
-Return the `[x,y]` coordinates of the specified value using the origins supplied for the inner arrays.
+Return the `[row,col]` coordinates of the specified value using the origins supplied for the inner arrays.
 
 ## Example
 
@@ -48,140 +48,145 @@ var LookupGrid = require('lookup-grid')
 
 var grid = LookupGrid(8, 8)
 
-var drums = ndarray(['a','b','c','d','e','f'], [2,3])
-// a d 
-// b e 
-// c f
+var drums = ndarray(['a','b','c','d','e','f'], [3,2])
+console.log(displayGrid(drums))
+//|---|---|
+//| a | b |
+//|---|---|
+//| c | d |
+//|---|---|
+//| e | f |
+//|---|---|
 
-var synth = ndarray(['h','i','j','k','l','m'], [3,2], [1, -3])
-// k l m 
-// h i j
 
-var bass = ArrayGrid(['s', 't','u','v','w','x','y','z'], [4,2], [1, 4])
-// s t u v
-// w x y z
+var synth = ndarray(['h','i','j','k','l','m'], [2,3], [-3, 1])
+console.log(displayGrid(synth))
+//|---|---|---|
+//| k | l | m |
+//|---|---|---|
+//| h | i | j |
+//|---|---|---|
+
+var bass = ndarray(['s', 't','u','v','w','x','y','z'], [2,4], [1, 2]) // col major
+console.log(displayGrid(bass))
+//|---|---|---|---|
+//| s | u | w | y |
+//|---|---|---|---|
+//| t | v | x | z |
+//|---|---|---|---|
 
 grid.set(0, 0, drums)
-grid.set(3, 0, synth)
-grid.set(2, 4, bass)
+grid.set(0, 3, synth)
+grid.set(4, 2, bass)
 
-// current grid
-//            <-- x -->
-// |---|---|---|---|---|---|---|---| 
-// | a | d |   |   | k | l | m |   |
-// |---|---|---|---|---|---|---|---|     
-// | b | e |   |   | h | i | j |   | 
-// |---|---|---|---|---|---|---|---| ^   
-// | c | f |   |   |   |   |   |   | |
-// |---|---|---|---|---|---|---|---| y           
-// |   |   |   |   |   |   |   |   | |
-// |---|---|---|---|---|---|---|---| v               
-// |   |   | s | t | u | v |   |   |
-// |---|---|---|---|---|---|---|---|    
-// |   |   | w | x | y | z |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
+console.log([0,0], grid.get(0,0)) //= 'a'
+console.log([0,1], grid.get(0,1)) //= 'd'
 
-grid.get(0,0) //= 'a'
-grid.get(1,0) //= 'd'
+console.log('a', grid.lookup('a')) //= [0,0]
+console.log('d', grid.lookup('d')) //= [0,1]
+console.log('y', grid.lookup('y')) //= [7,3]
 
-grid.lookup('a') //= [0,0]
-grid.lookup('d') //= [1,0]
-grid.lookup('y') //= [3,7]
+console.log(displayGrid(grid))
+//|---|---|---|---|---|---|---|---|
+//| a | b |   | k | l | m |   |   |
+//|---|---|---|---|---|---|---|---|
+//| c | d |   | h | i | j |   |   |
+//|---|---|---|---|---|---|---|---|
+//| e | f |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | s | u | w | y |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | t | v | x | z |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
 
 
 // move the drums across
-grid.set(1, 0, drums)
-
-// |---|---|---|---|---|---|---|---| 
-// |   | a | d |   | k | l | m |   |
-// |---|---|---|---|---|---|---|---|  
-// |   | b | e |   | h | i | j |   |
-// |---|---|---|---|---|---|---|---|  
-// |   | c | f |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   | s | t | u | v |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   | w | x | y | z |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-
+grid.set(0, 1, drums)
+console.log(displayGrid(grid))
+//|---|---|---|---|---|---|---|---|
+//|   | a | b | k | l | m |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   | c | d | h | i | j |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   | e | f |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | s | u | w | y |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | t | v | x | z |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
 
 
 // remove the synth
 grid.remove(synth)
-
-// |---|---|---|---|---|---|---|---|
-// |   | a | d |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---| 
-// |   | b | e |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---| 
-// |   | c | f |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---| 
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---| 
-// |   |   | s | t | u | v |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   | w | x | y | z |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-
+console.log(displayGrid(grid))
+//|---|---|---|---|---|---|---|---|
+//|   | a | b |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   | c | d |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   | e | f |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | s | u | w | y |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | t | v | x | z |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
 
 // update inner array
 drums.set(0,0, '%')
 drums.set(1,2, '$')
+console.log(displayGrid(grid))
+//|---|---|---|---|---|---|---|---|
+//|   | % | b |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   | c | d |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   | $ | f |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | s | u | w | y |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   | t | v | x | z |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
+//|   |   |   |   |   |   |   |   |
+//|---|---|---|---|---|---|---|---|
 
-// |---|---|---|---|---|---|---|---|
-// |   | % | d |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   | b | e |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   | c | $ |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   | s | t | u | v |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   | w | x | y | z |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
-// |   |   |   |   |   |   |   |   |
-// |---|---|---|---|---|---|---|---|
+//// RECURSIVE
 
-```
+var drums = ndarray(['a','b','c','d'], [2,2], [2, 1])
+var synth = ndarray(['e','f','g','h'], [2,2], [2, 1])
 
-### Recursive Usage
-
-The lookup-grid itself can be placed on another lookup-grid and perform lookups recursively.
-
-```js
-var drums = ndarray(['a','b','c','d'], [2,2], [1, 2])
-var synth = ndarray(['e','f','g','h'], [2,2], [1, 2])
-
-var innerGrid = LookupGrid(4, 2)
+var innerGrid = LookupGrid(2, 4)
 
 innerGrid.set(0,0, drums)
-innerGrid.set(2,0, synth)
+innerGrid.set(0,2, synth)
 
 console.log(displayGrid(innerGrid))
 
 var outerGrid = LookupGrid(8, 8)
-outerGrid.set(3,2, innerGrid)
+outerGrid.set(2,3, innerGrid)
 
 console.log(displayGrid(outerGrid))
-
 //|---|---|---|---|---|---|---|---|
 //|   |   |   |   |   |   |   |   |
 //|---|---|---|---|---|---|---|---|
@@ -199,4 +204,3 @@ console.log(displayGrid(outerGrid))
 //|---|---|---|---|---|---|---|---|
 //|   |   |   |   |   |   |   |   |
 //|---|---|---|---|---|---|---|---|
-```
